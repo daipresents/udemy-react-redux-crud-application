@@ -9,6 +9,7 @@ class EventsShow extends Component {
   constructor(props) {
     super(props)
     this.onSubmit = this.onSubmit.bind(this)
+    this.onDeleteClick = this.onDeleteClick.bind(this)
   }
 
   renderField(field) {
@@ -22,8 +23,14 @@ class EventsShow extends Component {
     )
   }
 
+  async onDeleteClick() {
+    const { id } = this.props.match.params
+    await this.props.deleteEvent(id)
+    this.props.history.push('/')
+  }
+
   async onSubmit(values) {
-    await this.props.postEvent(values)
+    //await this.props.putEvent(values)
     this.props.history.push('/')
   }
 
@@ -37,7 +44,8 @@ class EventsShow extends Component {
 
         <div>
           <input type="submit" value="Submit" disabled={pristine || submitting} />
-          <Link to="/" >Cancel</Link>
+          <Link to="/">Cancel</Link>
+          <Link to="/" onClick={this.onDeleteClick}>Delete</Link>
         </div>
       </form>
     )
@@ -53,8 +61,8 @@ const validate = values => {
   return errors
 }
 
-// const mapDispatchToProps = ({ postEvent })
+const mapDispatchToProps = ({ deleteEvent })
 
-export default connect(null, null)(
+export default connect(null, mapDispatchToProps)(
   reduxForm({ validate, form: 'eventShowForm' })(EventsShow)
 )
